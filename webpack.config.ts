@@ -2,6 +2,7 @@ var webpack = require('webpack');
 var path = require('path');
 var clone = require('js.clone');
 var webpackMerge = require('webpack-merge');
+var extractTextPlugin = require('extract-text-webpack-plugin');
 
 export var commonPlugins = [
   new webpack.ContextReplacementPlugin(
@@ -36,12 +37,16 @@ export var commonConfig = {
       // TypeScript
       { test: /\.ts$/,   use: ['awesome-typescript-loader', 'angular2-template-loader'] },
       { test: /\.html$/, use: 'raw-loader' },
-      { test: /\.css$/,  use: 'raw-loader' },
+      { test: /\.css$/,  use: 
+        extractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
+      , include: [/node_modules/, /global.css/] },
+      { test: /.css$/, use: ['to-string-loader', 'css-loader'], exclude: [/node_modules/, /global.css/] },
       { test: /\.json$/, use: 'json-loader' }
     ],
   },
   plugins: [
     // Use commonPlugins.
+    new extractTextPlugin({ filename: 'styles.css', disable: false, allChunks: true })
   ]
 
 };
@@ -85,7 +90,7 @@ export var serverConfig = {
     ],
   },
   externals: includeClientPackages(
-    /@angularclass|@angular|angular2-|ng2-|ng-|@ng-|angular-|@ngrx|ngrx-|@angular2|ionic|@ionic|-angular2|-ng2|-ng/
+    /@angularclass|@angular|angular2-|ng2-|ng-|@ng-|angular-|@ngrx|ngrx-|@angular2|ionic|@ionic|-angular2|-ng2|-ng|-loader/
   ),
   node: {
     global: true,

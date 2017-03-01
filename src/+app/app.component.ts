@@ -1,5 +1,7 @@
 import { Component, Directive, ElementRef, Renderer, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 
+import './app.global.css';
+
 //
 /////////////////////////
 // ** Example Directive
